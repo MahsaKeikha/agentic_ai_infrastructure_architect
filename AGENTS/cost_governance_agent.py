@@ -1,7 +1,15 @@
+from __future__ import annotations
+
+from SKILLS.cost_governance import govern_cost
+from orchestration.state import InfrastructureState
+
+
 class CostGovernanceAgent:
     name = "cost_governance"
 
-    def run(self, case: dict) -> dict:
-        budget = float(case.get("budget", 0))
-        estimate = float(case.get("estimated_cost", 0))
-        return {"agent": self.name, "budget": budget, "estimated_cost": estimate, "over_budget": estimate > budget if budget else False}
+    def run(self, state: InfrastructureState) -> dict:
+        result = govern_cost(state.case)
+        if result["over_budget"]:
+            state.escalate(self.name, "estimated monthly cost exceeds budget")
+        state.record(self.name, result)
+        return result

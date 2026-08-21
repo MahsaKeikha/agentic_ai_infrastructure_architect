@@ -1,7 +1,15 @@
+from __future__ import annotations
+
+from SKILLS.capacity_planning import assess_capacity
+from orchestration.state import InfrastructureState
+
+
 class CapacityAgent:
     name = "capacity"
 
-    def run(self, case: dict) -> dict:
-        demand = float(case.get("peak_demand", 0))
-        capacity = float(case.get("capacity", 0))
-        return {"agent": self.name, "peak_demand": demand, "capacity": capacity, "headroom": capacity - demand}
+    def run(self, state: InfrastructureState) -> dict:
+        result = assess_capacity(state.case)
+        if not result["sufficient"]:
+            state.escalate(self.name, "provisioned capacity is below expected peak demand", "critical")
+        state.record(self.name, result)
+        return result
