@@ -1,0 +1,38 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: python -m pip install --upgrade pip && python -m pip install -e '.[dev]'
+      - name: Lint
+        run: ruff check .
+      - name: Tests
+        run: pytest -q
+      - name: Architecture scenarios
+        run: python evals/run_scenarios.py
+      - name: Held-out reproducibility suite
+        run: python evals/run_heldout.py
+      - name: Minimal example
+        run: python examples/minimal.py
+      - name: Complete example
+        run: python examples/complete.py
+      - name: Smoke run
+        run: python run.py
+      - name: Upload held-out results
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: f40-heldout-results
+          path: artifacts/heldout_results.json
