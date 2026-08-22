@@ -22,5 +22,17 @@ jobs:
         run: pytest -q
       - name: Architecture scenarios
         run: python evals/run_scenarios.py
+      - name: Held-out reproducibility suite
+        run: python evals/run_heldout.py
+      - name: Minimal example
+        run: python examples/minimal.py
+      - name: Complete example
+        run: python examples/complete.py
       - name: Smoke run
         run: python run.py
+      - name: Upload held-out results
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: f40-heldout-results
+          path: artifacts/heldout_results.json

@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-ai-infrastructure-architect"
-version = "0.2.0"
-description = "Reference multi-agent system for AI infrastructure architecture, capacity, reliability, cost, and deployment readiness"
+version = "1.0.0"
+description = "L3 Gold Standard reference multi-agent system for AI infrastructure architecture, capacity, reliability, cost, and deployment readiness"
 requires-python = ">=3.10"
 authors = [{name = "Mahsa Keikha"}]
 license = {text = "MIT"}
 readme = "README.md"
-keywords = ["agentic-ai", "multi-agent", "infrastructure", "reliability", "capacity-planning"]
+keywords = ["agentic-ai", "multi-agent", "infrastructure", "reliability", "capacity-planning", "gold-standard"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.6"]

@@ -1,9 +1,22 @@
-# Evaluation
+# Evaluation and Benchmark Method
 
-F40 is evaluated at three levels.
+F40 evaluates decision-support behavior, not universal infrastructure quality.
 
-1. Unit and behavioral tests verify agent contracts, fail-closed behavior, evidence generation, escalations, and approval gating.
-2. Deterministic offline architecture scenarios verify healthy infrastructure, capacity shortfall, and missing security review.
-3. CI executes lint, tests, scenarios, and a smoke run on Python 3.10, 3.11, and 3.12.
+## Required metrics
 
-Current scenarios are intentionally small and reproducible. They are not evidence that the architecture covers every cloud, workload, compliance regime, or failure mode. L3 promotion should require larger held-out scenario suites, published result artifacts, and independent reproduction.
+- expected-status accuracy across deterministic scenarios;
+- approval-gate accuracy;
+- blocker detection for topology, capacity, reliability, cost, security, rollback, conflicts, and unresolved questions;
+- trace completeness;
+- provenance/evidence presence;
+- reproducibility across Python 3.10, 3.11, and 3.12.
+
+## Suites
+
+`evals/run_scenarios.py` contains the primary normal and failure suite. `evals/run_heldout.py` contains a separate eight-scenario acceptance suite spanning healthy architecture, capacity shortfall, budget overrun, untested recovery, missing security review, approval withholding, conflicting inputs, and unresolved disaster-recovery questions.
+
+CI requires a 100% expected-decision pass rate for both suites. Python 3.12 additionally uploads `artifacts/heldout_results.json` as a workflow artifact so the evaluation result can be inspected independently of console output.
+
+## Interpretation
+
+A passing suite means the checked reference behaviors are reproducible. It does not establish universal safety, provider-specific correctness, optimal cost, or fitness for unattended deployment. New infrastructure domains should add held-out fixtures before making stronger claims.
